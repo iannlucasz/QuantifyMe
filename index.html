@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quantify Me Game</title>
+  <link rel="shortcut icon" href="image/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container" id="start-screen">
+    <h1>🎮 Quantifiers Game</h1>
+    <p>
+      Neste jogo, você vai praticar os <strong>quantifiers</strong> (quantificadores) em inglês!  
+      Eles servem para indicar quantidade e aparecem antes de substantivos. Veja alguns exemplos:
+    </p>
+    <ul class="explanation">
+      <li><strong>much</strong> → usado com substantivos incontáveis<br>Ex: I don’t have <em>much</em> money.</li>
+      <li><strong>many</strong> → usado com substantivos contáveis no plural<br>Ex: She has <em>many</em> friends.</li>
+      <li><strong>a little</strong> → pequena quantidade (incontáveis)<br>Ex: There’s <em>a little</em> juice left.</li>
+      <li><strong>a few</strong> → pequena quantidade (contáveis)<br>Ex: I have <em>a few</em> pencils.</li>
+      <li><strong>some / any</strong> → quantidade indefinida (some para afirmativa, any para negativa/interrogativa)</li>
+      <li><strong>too / enough</strong> → intensidade (demais / o suficiente)</li>
+    </ul>
+    <button class="btn-start" onclick="startGame()">Começar Jogo</button>
+    <header>
+        <p><strong>Desenvolvido por: </strong><i>Iann Lucas </i>😎</p>
+    </header>
+  </div>
+
+  <div class="container" id="game" style="display: none;">
+    <div class="timer" id="timer">Tempo: 60s</div>
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
