@@ -1,128 +1,149 @@
+// script.js
+
+const intro = document.getElementById("intro");
+const game = document.getElementById("game");
+const result = document.getElementById("result");
+const questionText = document.getElementById("question");
+const optionsContainer = document.getElementById("options");
+const scoreDisplay = document.getElementById("score");
+const progress = document.getElementById("current");
+const timeDisplay = document.getElementById("time");
+const mistakesDisplay = document.getElementById("mistakes");
+
+let currentQuestion = 0;
+let score = 0;
+let mistakes = [];
+let timer;
+let timeLeft = 90;
+
 const questions = [
-    {
-      question: "There are only _____ cookies left in the jar.",
-      options: ["a little", "a few", "few", "much"],
-      answer: "a few"
-    },
-    {
-      question: "We have _____ milk. Go buy some more!",
-      options: ["many", "a little", "few", "enough"],
-      answer: "a little"
-    },
-    {
-      question: "Do you have _____ sugar for my coffee?",
-      options: ["any", "much", "few", "some"],
-      answer: "any"
-    },
-    {
-      question: "He didn’t study _____ to pass the test.",
-      options: ["a lot of", "enough", "too", "some"],
-      answer: "enough"
-    },
-    {
-      question: "She has _____ clothes to fill two closets!",
-      options: ["too", "much", "many", "a few"],
-      answer: "too"
-    },
-    {
-      question: "There isn’t _____ water in the bottle.",
-      options: ["any", "many", "a few", "enough"],
-      answer: "any"
-    },
-    {
-      question: "I have _____ friends coming over later.",
-      options: ["a little", "a few", "much", "many"],
-      answer: "a few"
-    },
-    {
-      question: "They didn’t have _____ chairs for everyone.",
-      options: ["some", "much", "enough", "too"],
-      answer: "enough"
-    },
-    {
-      question: "We saw _____ people at the park today.",
-      options: ["much", "a few", "too", "any"],
-      answer: "a few"
-    },
-    {
-      question: "There is _____ juice in the fridge.",
-      options: ["a little", "many", "few", "some"],
-      answer: "a little"
+  {
+    question: "How ____ money do you have?",
+    options: ["many", "much", "some"],
+    answer: "much",
+  },
+  {
+    question: "There are ____ students in the class.",
+    options: ["much", "a few", "little"],
+    answer: "a few",
+  },
+  {
+    question: "I don’t have ____ friends here.",
+    options: ["many", "much", "any"],
+    answer: "many",
+  },
+  {
+    question: "We need ____ sugar for the cake.",
+    options: ["a little", "few", "many"],
+    answer: "a little",
+  },
+  {
+    question: "She didn’t eat ____ of the food.",
+    options: ["some", "much", "many"],
+    answer: "much",
+  },
+  {
+    question: "There aren’t ____ apples left.",
+    options: ["any", "some", "a little"],
+    answer: "any",
+  },
+  {
+    question: "He has ____ work to do.",
+    options: ["too much", "too many", "some"],
+    answer: "too much",
+  },
+  {
+    question: "Do you have ____ questions?",
+    options: ["some", "any", "too"],
+    answer: "any",
+  },
+  {
+    question: "We don’t have ____ chairs.",
+    options: ["a few", "many", "too much"],
+    answer: "many",
+  },
+  {
+    question: "She drank ____ water after the run.",
+    options: ["a few", "too much", "many"],
+    answer: "too much",
+  },
+];
+
+function startGame() {
+  intro.classList.add("hidden");
+  game.classList.remove("hidden");
+  startTimer();
+  showQuestion();
+}
+
+function showQuestion() {
+  const q = questions[currentQuestion];
+  questionText.textContent = q.question;
+  progress.textContent = currentQuestion + 1;
+  optionsContainer.innerHTML = "";
+
+  q.options.forEach((opt) => {
+    const btn = document.createElement("button");
+    btn.textContent = opt;
+    btn.onclick = () => selectAnswer(opt);
+    optionsContainer.appendChild(btn);
+  });
+}
+
+function selectAnswer(selected) {
+  const correct = questions[currentQuestion].answer;
+  const buttons = optionsContainer.querySelectorAll("button");
+
+  buttons.forEach((btn) => {
+    btn.disabled = true;
+    if (btn.textContent === correct) {
+      btn.classList.add("correct");
+    } else if (btn.textContent === selected) {
+      btn.classList.add("wrong");
     }
-  ];
-  
-  let current = 0;
-  let score = 0;
-  let wrongAnswers = [];
-  let time = 90;
-  let interval;
-  
-  const questionEl = document.getElementById("question");
-  const optionsEl = document.getElementById("options");
-  const timerEl = document.getElementById("timer");
-  const gameEl = document.getElementById("game");
-  const startScreen = document.getElementById("start-screen");
-  
-  function startGame() {
-    startScreen.style.display = "none";
-    gameEl.style.display = "block";
-    showQuestion();
-    startTimer();
-  }
-  
-  function showQuestion() {
-    const q = questions[current];
-    questionEl.textContent = q.question;
-    optionsEl.innerHTML = "";
-    q.options.forEach(option => {
-      const btn = document.createElement("button");
-      btn.textContent = option;
-      btn.onclick = () => selectAnswer(option);
-      optionsEl.appendChild(btn);
+  });
+
+  if (selected === correct) {
+    score++;
+  } else {
+    mistakes.push({
+      question: questions[currentQuestion].question,
+      correct,
+      selected,
     });
   }
-  
-  function selectAnswer(option) {
-    const correct = questions[current].answer;
-    if (option === correct) {
-      score++;
-    } else {
-      wrongAnswers.push({
-        question: questions[current].question,
-        selected: option,
-        correct: correct
-      });
-    }
-    current++;
-    if (current < questions.length) {
+
+  setTimeout(() => {
+    currentQuestion++;
+    if (currentQuestion < questions.length) {
       showQuestion();
     } else {
-      showResult();
+      endGame();
     }
+  }, 1000);
+}
+
+function startTimer() {
+  timer = setInterval(() => {
+    timeLeft--;
+    timeDisplay.textContent = timeLeft;
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      endGame();
+    }
+  }, 1000);
+}
+
+function endGame() {
+  game.classList.add("hidden");
+  result.classList.remove("hidden");
+  scoreDisplay.textContent = score;
+
+  if (mistakes.length > 0) {
+    mistakesDisplay.innerHTML = "<h3>Erros:</h3><ul>" +
+      mistakes.map(m => `<li>${m.question}<br><strong>Correta:</strong> ${m.correct} | <strong>Sua resposta:</strong> ${m.selected}</li>`).join("") +
+      "</ul>";
+  } else {
+    mistakesDisplay.innerHTML = "<p>🎉 Parabéns! Você acertou tudo!</p>";
   }
-  
-  function showResult() {
-    clearInterval(interval);
-    gameEl.innerHTML = `
-      <h2>🏁 Fim do jogo!</h2>
-      <p class="result">Você acertou <strong>${score}</strong> de ${questions.length} perguntas.</p>
-      <p class="result">Você errou <strong>${wrongAnswers.length}</strong>:</p>
-      <ul class="error-list">
-        ${wrongAnswers.map(e => `<li><strong>${e.question}</strong><br>Você respondeu: <em>${e.selected}</em><br>Correto: <strong>${e.correct}</strong></li>`).join("")}
-      </ul>
-      <button class="btn-restart" onclick="location.reload()">Jogar novamente</button>
-    `;
-  }
-  
-  function startTimer() {
-    interval = setInterval(() => {
-      time--;
-      timerEl.textContent = `Tempo: ${time}s`;
-      if (time <= 0 || current >= questions.length) {
-        clearInterval(interval);
-        showResult();
-      }
-    }, 1000);
-  }
-  
-  
+}
