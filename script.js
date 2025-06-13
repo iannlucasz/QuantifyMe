@@ -14,7 +14,7 @@ let currentQuestion = 0;
 let score = 0;
 let mistakes = [];
 let timer;
-let timeLeft = 90;
+let timeLeft = 150;
 
 const questions = [
   {
@@ -86,8 +86,10 @@ function showQuestion() {
     const btn = document.createElement("button");
     btn.textContent = opt;
     btn.onclick = () => selectAnswer(opt);
+    btn.style.fontSize = "1.2rem";
     optionsContainer.appendChild(btn);
   });
+  questionText.style.fontSize = "1.5rem";
 }
 
 function selectAnswer(selected) {
